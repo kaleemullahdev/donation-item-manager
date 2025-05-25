@@ -1,0 +1,8 @@
+package.json
+pnpm-lock.yaml
+public
+CHANGELOG.md
+.pnpm-lock.yaml
+dist
+node_modules
+build
