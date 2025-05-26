@@ -2,6 +2,7 @@ import { useForm } from 'react-hook-form'
 
 import { zodResolver } from '@hookform/resolvers/zod'
 import { QueryObserverResult } from '@tanstack/react-query'
+import { toast } from 'sonner'
 import { z } from 'zod'
 
 import { Button } from '@/components/shadcn/ui/button'
@@ -76,14 +77,19 @@ export const CreateItemModal: React.FC<Props> = ({
 }) => {
   const onSuccess = () => {
     refetchDonationItems()
+    toast.success('Donation has been created', { className: 'bg-primary' })
     handleClose()
   }
+
   const onError = (error: Error) => {
-    console.error('Failed to create donation item:', error)
+    toast.error(`Failed to create donation item:${error}`, {
+      className: 'bg-warning',
+    })
   }
 
   const { addDonationItemMutation, isPending } = useMutationAddDonationItems({
-    onSuccess,
+    onSettled: onSuccess,
+    onSuccess: onSuccess,
     onError,
   })
   const createItemSchemaWithUnique = createItemSchema.extend({
@@ -233,7 +239,7 @@ export const CreateItemModal: React.FC<Props> = ({
               <Button
                 type='submit'
                 disabled={isPending || !form.formState.isValid}
-                className='flex-1 bg-primary hover:bg-primary/90'
+                className='flex-1 bg-primary hover:bg-primary/90 cursor-pointer'
               >
                 {isPending ? 'Creating...' : 'Create'}
               </Button>
@@ -241,7 +247,7 @@ export const CreateItemModal: React.FC<Props> = ({
                 type='button'
                 variant='outline'
                 onClick={handleClose}
-                className='flex-1 border-primary text-primary hover:bg-primary hover:text-white'
+                className='flex-1 border-primary text-primary hover:bg-primary hover:text-white cursor-pointer'
               >
                 Cancel
               </Button>

@@ -1,7 +1,7 @@
-import React, { ReactEventHandler, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
-import { useQueryClient } from '@tanstack/react-query'
 import { Filter, Grid, List, ListRestart, Plus } from 'lucide-react'
+import { toast } from 'sonner'
 
 import { DataCard } from '@/components/data-card'
 import { Pagination } from '@/components/pagination'
@@ -32,7 +32,6 @@ const DonationItemsApp: React.FC = () => {
   const [currentPage, setCurrentPage] = useState<number>(1)
   const [isOpen, setIsModalOpen] = useState<boolean>(false)
   const isMobile = useIsMobile()
-  const queryClient = useQueryClient()
 
   const {
     data: donationItems = [],
@@ -46,6 +45,7 @@ const DonationItemsApp: React.FC = () => {
   const { data: themes = [] } = useQueryDonationThemes()
 
   const onSuccess = () => {
+    toast.success('Donation has been resetted')
     refetchDonationItems()
   }
 
