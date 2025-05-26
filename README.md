@@ -156,10 +156,10 @@ _Why this testing approach?_ Tests focus on user behavior rather than implementa
 
 ### 2. Test Patterns
 
-- **Render Testing**: Verify component rendering
-- **User Interaction**: Test click events and form submissions
-- **State Changes**: Verify component state updates
-- **Edge Cases**: Test with empty or invalid data
+- **Render Testing**: Verifies component rendering
+- **User Interaction**: Tests click events and form submissions
+- **State Changes**: Verifies component state updates
+- **Edge Cases**: Tests with empty or invalid data
 
 ### 3. Test Coverage
 
@@ -206,8 +206,8 @@ _Why this formatting?_ These settings provide a clean, consistent code style tha
 
 ### 3. Git Hooks (Husky)
 
-- Pre-commit: Lint and format code
-- Pre-push: Run tests
+- Pre-commit: Lints and formats code
+- Pre-push: Runs tests
 
 _Why Git hooks?_ They ensure code quality by running checks before code is committed or pushed.
 
@@ -318,29 +318,17 @@ _Why these patterns?_ They ensure components handle edge cases gracefully.
 
 1. **Code Organization**
 
-   - Keep components small and focused
-   - Use proper TypeScript types
-   - Follow atomic design principles
+   - Kept components small and focused
+   - Used proper TypeScript types
+   - Followed atomic design principles
 
 2. **Testing**
 
-   - Write tests for all components
-   - Test edge cases and error states
-   - Use proper test patterns
+   - Written tests for all components
+   - Tested edge cases and error states
+   - Used proper test patterns
 
 3. **Accessibility**
-   - Use semantic HTML
-   - Implement proper ARIA attributes
-   - Ensure keyboard navigation
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Commit your changes
-4. Push to the branch
-5. Create a Pull Request
-
-## 📄 License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
+   - Used semantic HTML
+   - Implemented proper ARIA attributes
+   - Ensured keyboard navigation
