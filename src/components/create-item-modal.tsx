@@ -2,6 +2,7 @@ import { useForm } from 'react-hook-form'
 
 import { zodResolver } from '@hookform/resolvers/zod'
 import { QueryObserverResult } from '@tanstack/react-query'
+import { toast } from 'sonner'
 import { z } from 'zod'
 
 import { Button } from '@/components/shadcn/ui/button'
@@ -27,7 +28,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/shadcn/ui/select'
-import { useMutation } from '@/hooks/useMutation'
+import { useMutationAddDonationItems } from '@/hooks/useMutationAddDonationItems'
 import {
   CreateDonationItemRequest,
   DonationItem,
@@ -66,25 +67,6 @@ type Props = {
   existingNames: string[]
 }
 
-const API_BASE = 'https://n3o-coding-task-react.azurewebsites.net'
-
-const createDonationItem = async (
-  data: CreateDonationItemRequest
-): Promise<DonationItem> => {
-  const response = await fetch(`${API_BASE}/api/v1/donationItems`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(data),
-  })
-
-  if (!response.ok) {
-    const error = await response.text()
-    throw new Error(error || 'Failed to create donation item')
-  }
-
-  return response.json()
-}
-
 export const CreateItemModal: React.FC<Props> = ({
   isOpen,
   toggleModal,
@@ -93,6 +75,23 @@ export const CreateItemModal: React.FC<Props> = ({
   refetchDonationItems,
   existingNames,
 }) => {
+  const onSuccess = () => {
+    refetchDonationItems()
+    toast.success('Donation has been created', { className: 'bg-primary' })
+    handleClose()
+  }
+
+  const onError = (error: Error) => {
+    toast.error(`Failed to create donation item:${error}`, {
+      className: 'bg-warning',
+    })
+  }
+
+  const { addDonationItemMutation, isPending } = useMutationAddDonationItems({
+    onSettled: onSuccess,
+    onSuccess: onSuccess,
+    onError,
+  })
   const createItemSchemaWithUnique = createItemSchema.extend({
     name: z
       .string()
@@ -117,24 +116,6 @@ export const CreateItemModal: React.FC<Props> = ({
     mode: 'onChange', // Validate on change for better UX
   })
 
-  const queryClient = {
-    invalidateQueries: (queryKey: string[]) => {
-      console.log('Invalidating queries:', queryKey)
-    },
-  }
-
-  const createMutation = useMutation(createDonationItem, {
-    onSuccess: () => {
-      queryClient.invalidateQueries(['donationItems'])
-      refetchDonationItems()
-      handleClose()
-    },
-    onError: error => {
-      // Handle API errors - you could show a toast notification here
-      console.error('Failed to create donation item:', error)
-    },
-  })
-
   const handleClose = () => {
     form.reset()
     toggleModal()
@@ -142,7 +123,7 @@ export const CreateItemModal: React.FC<Props> = ({
 
   const onSubmit = async (data: CreateItemFormData) => {
     const payload: CreateDonationItemRequest = {
-      name: data.name, // Already trimmed by zod transform
+      name: data.name,
       location: data.locationId,
       theme: data.themeId,
       ...(data.price && {
@@ -153,7 +134,7 @@ export const CreateItemModal: React.FC<Props> = ({
       }),
     }
 
-    await createMutation.mutate(payload)
+    await addDonationItemMutation(payload)
   }
 
   return (
@@ -257,16 +238,16 @@ export const CreateItemModal: React.FC<Props> = ({
             <div className='flex gap-2 pt-4'>
               <Button
                 type='submit'
-                disabled={createMutation.isPending || !form.formState.isValid}
-                className='flex-1 bg-primary hover:bg-primary/90'
+                disabled={isPending || !form.formState.isValid}
+                className='flex-1 bg-primary hover:bg-primary/90 cursor-pointer'
               >
-                {createMutation.isPending ? 'Creating...' : 'Create'}
+                {isPending ? 'Creating...' : 'Create'}
               </Button>
               <Button
                 type='button'
                 variant='outline'
                 onClick={handleClose}
-                className='flex-1 border-primary text-primary hover:bg-primary hover:text-white'
+                className='flex-1 border-primary text-primary hover:bg-primary hover:text-white cursor-pointer'
               >
                 Cancel
               </Button>

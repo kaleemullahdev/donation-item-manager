@@ -1,28 +1,28 @@
 import { useMutation } from '@tanstack/react-query'
 
-import { addDonationItem } from '@/services/donation-item-services'
+import { resetDonationData } from '@/services/donation-item-services'
 import { DonationMutationHookProps } from '@/types'
 
-export const useMutationAddDonationItems = ({
+export const useMutationResetDonations = ({
   onSuccess,
-  onError,
+  onSettled,
 }: DonationMutationHookProps) => {
   const {
     isPending,
-    mutate: addDonationItemMutation,
+    mutate: resetDonations,
     error,
     data,
   } = useMutation({
-    mutationKey: ['addDonationItems'],
-    mutationFn: addDonationItem,
+    mutationKey: ['ressetDonationData'],
+    mutationFn: resetDonationData,
+    onSettled: onSettled,
     onSuccess: onSuccess,
-    onError: onError,
   })
 
   return {
     isPending,
     error,
     data,
-    addDonationItemMutation,
+    resetDonations,
   }
 }
