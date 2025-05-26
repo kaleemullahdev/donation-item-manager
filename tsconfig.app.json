@@ -36,6 +36,6 @@
     "noImplicitOverride": true,
     "exactOptionalPropertyTypes": true
   },
-  "include": ["src", "vite.config.ts"],
+  "include": ["src", "vite.config.ts", "jest.config.js", "src/setupTests.ts"],
   "exclude": ["node_modules", "dist"]
 }

@@ -9,7 +9,7 @@ import reactHooks from 'eslint-plugin-react-hooks'
 import reactRefresh from 'eslint-plugin-react-refresh'
 import globals from 'globals'
 
-export default [
+const defaultconfig = [
   {
     ignores: ['dist', 'node_modules', 'coverage', '*.config.js', '*.config.ts'],
   },

@@ -8,6 +8,11 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
-    }
+    },
+    "types": [
+      "vite/client", // If you have this already, keep it
+      "jest",
+      "@testing-library/jest-dom"
+    ]
   }
 }
