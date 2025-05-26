@@ -3,15 +3,7 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 
 import DonationItems from './donation-items'
 
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      staleTime: 5 * 60 * 1000, // 5 minutes
-      refetchOnWindowFocus: false,
-      retry: 1,
-    },
-  },
-})
+const queryClient = new QueryClient()
 
 export default function App() {
   return (

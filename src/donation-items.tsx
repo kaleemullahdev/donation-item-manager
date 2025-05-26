@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react'
+import React, { ReactEventHandler, useEffect, useState } from 'react'
 
+import { useQueryClient } from '@tanstack/react-query'
 import { Filter, Grid, List, ListRestart, Plus } from 'lucide-react'
 
 import { DataCard } from '@/components/data-card'
@@ -14,6 +15,7 @@ import {
   SelectValue,
 } from '@/components/shadcn/ui/select'
 import { ITEMS_PER_PAGE } from '@/constants'
+import { useMutationResetDonations } from '@/hooks/useMutationResetDonations'
 import { useQueryAllDonationItems } from '@/hooks/useQueryAllDonationItems'
 import { useQueryDonationLocations } from '@/hooks/useQueryDonationLocations'
 import { useQueryDonationStatuses } from '@/hooks/useQueryDonationStatuses'
@@ -30,6 +32,7 @@ const DonationItemsApp: React.FC = () => {
   const [currentPage, setCurrentPage] = useState<number>(1)
   const [isOpen, setIsModalOpen] = useState<boolean>(false)
   const isMobile = useIsMobile()
+  const queryClient = useQueryClient()
 
   const {
     data: donationItems = [],
@@ -41,6 +44,20 @@ const DonationItemsApp: React.FC = () => {
   const { data: locations = [] } = useQueryDonationLocations()
   const { data: allStatus = [] } = useQueryDonationStatuses()
   const { data: themes = [] } = useQueryDonationThemes()
+
+  const onSuccess = () => {
+    refetchDonationItems()
+  }
+
+  const onError = (error: Error) => {
+    console.log('error', error)
+  }
+
+  const { resetDonations, isPending } = useMutationResetDonations({
+    onError,
+    onSuccess: onSuccess,
+    onSettled: onSuccess,
+  })
 
   const filteredItems = donationItems.filter(
     (item: DonationItem) =>
@@ -64,7 +81,11 @@ const DonationItemsApp: React.FC = () => {
     }
   }, [isMobile])
 
-  if (isLoading) {
+  const resetDonationRecords = (ev: React.MouseEvent<HTMLButtonElement>) => {
+    resetDonations(undefined)
+  }
+
+  if (isLoading || isPending) {
     return (
       <div className='flex items-center justify-center min-h-screen'>
         <div className='animate-spin rounded-full h-8 w-8 border-b-2 border-primary'></div>
@@ -98,11 +119,11 @@ const DonationItemsApp: React.FC = () => {
   return (
     <div className='min-h-screen bg-gray-50 p-4'>
       <div className='max-w-7xl mx-auto'>
-        <div className='mb-8'>
-          <h1 className='text-3xl font-bold text-gray-900 mb-2'>
+        <div className='mb-8 bg-secondary p-10 text-center'>
+          <h1 className='text-3xl font-bold text-gray-900 mb-2 '>
             Donation Items
           </h1>
-          <p className='text-gray-600'>Manage and view donation items</p>
+          <p className='text-black'>Add and view donation items</p>
         </div>
 
         <div className='flex flex-col sm:flex-row gap-4 mb-6 justify-between'>
@@ -154,16 +175,19 @@ const DonationItemsApp: React.FC = () => {
             )}
 
             <Button
-              className='bg-primary hover:bg-primary/90 text-white'
+              className='bg-primary hover:bg-primary/90 text-white cursor-pointer'
               onClick={toggleModal}
             >
               <Plus className='h-4 w-4 mr-2' />
               Add Donation Item
             </Button>
 
-            <Button className='bg-primary hover:bg-primary/90 text-white'>
+            <Button
+              className='bg-primary hover:bg-primary/90 text-white cursor-pointer'
+              onClick={resetDonationRecords}
+            >
               <ListRestart className='h-4 w-4 mr-2' />
-              Reset Data
+              Reset Donations
             </Button>
           </div>
 

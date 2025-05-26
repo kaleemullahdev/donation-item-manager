@@ -44,3 +44,22 @@ export interface FormErrors {
   themeId?: string
   price?: string
 }
+
+export type DonationMutationHookProps = {
+  onSuccess: (
+    data: DonationItem | undefined,
+    variables: CreateDonationItemRequest | undefined,
+    context: unknown
+  ) => Promise<unknown> | unknown
+
+  onError: (
+    error: Error,
+    variables: CreateDonationItemRequest,
+    context: unknown
+  ) => Promise<unknown> | unknown
+  onSettled: (
+    data: DonationItem | undefined,
+    error: Error | null,
+    context: unknown
+  ) => Promise<unknown> | unknown
+}

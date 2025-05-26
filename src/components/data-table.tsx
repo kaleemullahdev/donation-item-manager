@@ -15,6 +15,7 @@ type Props = {
   paginatedItems: DonationItem[]
 }
 export const DataTable: React.FC<Props> = ({ paginatedItems }) => {
+  if (!paginatedItems.length) return null
   return (
     <Card>
       <CardContent className='pl-10 pr-10'>
@@ -31,10 +32,11 @@ export const DataTable: React.FC<Props> = ({ paginatedItems }) => {
           </TableHeader>
           <TableBody>
             {paginatedItems.map(item => {
-              console.log('item', item)
               return (
                 <TableRow key={item.id}>
-                  <TableCell className='font-medium'>{item.name}</TableCell>
+                  <TableCell className='font-medium max-w-[200px] break-words whitespace-normal'>
+                    {item.name}
+                  </TableCell>
                   <TableCell>{item.reference?.type.id || 'N/A'}</TableCell>
                   <TableCell>
                     {item.price ? `${item?.price?.text}` : `£0`}
